@@ -1,0 +1,103 @@
+version: '2'
+services:
+  m1:
+    image: mysql:8.0.20
+    container_name: m1
+    volumes:
+      - ../config/mysql-m1/conf.d/docker.cnf:/etc/mysql/conf.d/docker.cnf:ro
+      #- /etc/localtime:/etc/localtime:ro
+      - ../config/hosts:/etc/hosts:ro
+    ports:
+      - "3309:3306"
+    networks:
+      mysql:
+        ipv4_address: 172.18.0.2
+    ulimits:
+      nproc: 65535
+    hostname: m1
+    mem_limit: 512m
+    restart: always
+    command: 
+      - '--default-authentication-plugin=mysql_native_password'
+      - '--character-set-server=utf8mb4'
+    environment:
+      MYSQL_ROOT_PASSWORD: m1test
+  s1:
+    image: mysql:8.0.20
+    container_name: s1
+    volumes:
+      - ../config/mysql-s1/conf.d/docker.cnf:/etc/mysql/conf.d/docker.cnf:ro
+      # - /etc/localtime:/etc/localtime:ro
+      - ../config/hosts:/etc/hosts:ro
+    ports:
+      - "3307:3306"
+    networks:
+      mysql:
+        ipv4_address: 172.18.0.3
+    links:
+      - m1
+    ulimits:
+      nproc: 65535
+    hostname: s1
+    mem_limit: 512m
+    restart: always
+    command:
+      - '--default-authentication-plugin=mysql_native_password'
+      - '--character-set-server=utf8mb4'
+    environment:
+      MYSQL_ROOT_PASSWORD: s1test
+  s2:
+    image: mysql:8.0.20
+    container_name: s2
+    volumes:
+      - ../config/mysql-s2/conf.d/docker.cnf:/etc/mysql/conf.d/docker.cnf:ro
+      #- /etc/localtime:/etc/localtime:ro
+      - ../config/hosts:/etc/hosts:ro
+    ports:
+      - "3308:3306"
+    links:
+      - m1
+    networks:
+      mysql:
+        ipv4_address: 172.18.0.4
+    ulimits:
+      nproc: 65535
+    hostname: s2
+    mem_limit: 512m
+    restart: always
+    command: 
+      - '--default-authentication-plugin=mysql_native_password'
+      - '--character-set-server=utf8mb4'
+    environment:
+      MYSQL_ROOT_PASSWORD: s2test
+  mycat:
+    build: ./mycat
+    container_name: mycat
+    volumes:
+      - ../config/mycat/:/mycat/conf/:ro
+      - ../log/mycat-logs/:/mycat/logs/:rw
+      #- /etc/localtime:/etc/localtime:ro
+      - ../config/hosts:/etc/hosts:ro
+    ports:
+      - "8066:8066"
+      - "9066:9066"
+    links:
+      - m1
+      - s1
+      - s2
+    networks:
+      mysql:
+        ipv4_address: 172.18.0.5
+    ulimits:
+      nproc: 65535
+    hostname: mycat
+    mem_limit: 512m
+    restart: always
+networks:
+  mysql:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: 172.18.0.0/24
+        gateway: 172.18.0.1
