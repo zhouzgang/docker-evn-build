@@ -1,0 +1,54 @@
+version: '3.7'
+
+services:
+  mysql_master:
+    image: mysql:5.7
+    container_name: ecomb-db-master
+    hostname: ecomb-db-master
+    command: --default-authentication-plugin=mysql_native_password
+    restart: on-failure
+    expose:
+      - "3306"
+    ports:
+      - "33064:3306"
+    environment:
+      - "MYSQL_ROOT_PASSWORD=123"
+    networks:
+      - ecomb
+  mysql_slave:
+    image: mysql:5.7
+    container_name: ecomb-db-slave
+    hostname: ecomb-db-slave
+    command: --default-authentication-plugin=mysql_native_password
+    restart: on-failure
+    expose:
+      - "3306"
+    ports:
+      - "33065:3306"
+    environment:
+      - "MYSQL_ROOT_PASSWORD=123"
+    networks:
+      - ecomb
+  mycat:
+    build: .
+    container_name: mycat
+    # volumes:
+      # - ./config/mycat/:/mycat/conf/:ro
+      # - ./log/mycat-logs/:/mycat/logs/:rw
+      #- /etc/localtime:/etc/localtime:ro
+      # - ./config/hosts:/etc/hosts:ro
+    ports:
+      - "8066:8066"
+      - "9066:9066"
+    ulimits:
+      nproc: 65535
+    hostname: ecomb-db-mycat
+    # mem_limit: 1024m
+    restart: always
+    networks:
+      - ecomb
+
+networks:
+  ecomb:
+    external:
+      name: ecomb

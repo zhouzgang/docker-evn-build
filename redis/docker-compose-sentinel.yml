@@ -1,0 +1,73 @@
+# 版本
+version: '3.1'
+# 服务配置
+services:
+  # sentinel配置
+  sentinel-1:
+    # 镜像名称
+    image: redis
+    # 容器名称
+    container_name: redis-sentinel-1
+    # 是否开机启动
+    restart: always
+    # 文件夹映射
+    volumes:
+      - ./sentinel1.conf:/usr/local/etc/redis/sentinel.conf
+    # 执行命令
+    command: redis-sentinel /usr/local/etc/redis/sentinel.conf
+    # 端口映射
+    ports:
+      - 26379:26379
+    # 加入的网络的名称
+    networks:
+      redis:
+        ipv4_address: 192.18.1.2
+
+
+  sentinel-2:
+    # 镜像名称
+    image: redis
+    # 容器名称
+    container_name: redis-sentinel-2
+    # 是否开机启动
+    restart: always
+    # 文件夹映射
+    volumes:
+      - ./sentinel2.conf:/usr/local/etc/redis/sentinel.conf
+    # 执行命令
+    command: redis-sentinel /usr/local/etc/redis/sentinel.conf
+    # 端口映射
+    ports:
+      - 26380:26379
+    # 加入的网络的名称
+    networks:
+      redis:
+        ipv4_address: 192.18.1.3
+
+  sentinel-3:
+    # 镜像名称
+    image: redis
+    # 容器名称
+    container_name: redis-sentinel-3
+    # 是否开机启动
+    restart: always
+    # 文件夹映射
+    volumes:
+      - ./sentinel3.conf:/usr/local/etc/redis/sentinel.conf
+    # 执行命令
+    command: redis-sentinel /usr/local/etc/redis/sentinel.conf
+    # 端口映射
+    ports:
+      - 26381:26379
+    # 加入的网络的名称
+    networks:
+      redis:
+        ipv4_address: 192.18.1.4
+
+networks:
+  redis:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.18.1.0/24
