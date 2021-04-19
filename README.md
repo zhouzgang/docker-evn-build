@@ -12,6 +12,8 @@ docker exec -it zoo1 /bin/sh
 docker-compose -f docker-compose-zookeeper-cluster.yml up -d
 # 关闭 docker 编排的容器
 docker-compose -f ocker-compose-zookeeper-cluster.yml stop
+# 关闭所有容器
+
 ```
 
 
