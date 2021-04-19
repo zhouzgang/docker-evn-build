@@ -16,6 +16,13 @@ docker-compose -f ocker-compose-zookeeper-cluster.yml stop
 
 
 ## docker 网络管理
+*记录*
+- 使用统一的网络 docker_net，不同组件使用不同网段
+```powershell
+docker network 
+```
+
+*参考*
 - [网络管理](https://www.cnblogs.com/lei0213/p/12631681.html)
 - [network manage](https://andrewpqc.github.io/2017/09/20/Network-management-of-Docker/)
 

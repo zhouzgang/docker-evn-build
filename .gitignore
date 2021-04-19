@@ -1,5 +1,7 @@
 .DS_Store
 zookeeper/zookeeper
 kafka/kafka
-mycat/**/data
-mycat/**/logs
+
+**/logs/
+**/data/
+applogs/
