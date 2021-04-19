@@ -1,2 +1,5 @@
 .DS_Store
-./zookeeper/zookeeper
+zookeeper/zookeeper
+kafka/kafka
+mycat/**/data
+mycat/**/logs
