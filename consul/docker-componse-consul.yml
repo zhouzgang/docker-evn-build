@@ -1,0 +1,51 @@
+version: '3.7'
+
+services:
+    consul1:
+        image: consul
+        container_name: consul_node_1
+        command: agent -server -bootstrap-expect=3 -node=consul_node_1 -bind=127.0.0.1 -client=0.0.0.0 -datacenter=dc1
+        networks:
+            docker_base:
+                ipv4_address: 192.18.0.51
+
+    consul2:
+        image: consul
+        container_name: consul_node_2
+        command: agent -server -retry-join=consul_node_1 -node=consul_node_2 -bind=127.0.0.1 -client=0.0.0.0 -datacenter=dc1
+        depends_on:
+            - consul1
+        networks:
+            docker_base:
+                ipv4_address: 192.18.0.52
+
+    consul3:
+        image: consul
+        container_name: consul_node_3
+        command: agent -server -retry-join=consul_node_1 -node=consul_node_3 -bind=127.0.0.1 -client=0.0.0.0 -datacenter=dc1
+        depends_on:
+            - consul1
+        networks:
+            docker_base:
+                ipv4_address: 192.18.0.53
+
+    consul4:
+        image: consul
+        container_name: consul_node_4
+        command: agent -retry-join=consul_node_1 -node=consul_node_4 -bind=127.0.0.1 -client=0.0.0.0 -datacenter=dc1 -ui 
+        ports:
+            - 8500:8500
+        depends_on:
+            - consul2
+            - consul3
+        networks:
+            docker_base:
+                ipv4_address: 192.18.0.54
+
+networks:
+    docker_base:
+        driver: bridge
+        ipam:
+            driver: default
+            config:
+                - subnet: 192.18.0.0/24

@@ -2,7 +2,7 @@
 > 可以将处理完后的思考理解记录下来，而不是复制粘贴记录
 > 这个最终目标是可以写使用 make 命令随意搭建各种组件，不需要每次为了搭建环境而花时间
 
-## docker 操作笔记
+### docker 操作笔记
 ```shell
 # 搜索远程仓库有哪些 kafka images
 docker search kafa
@@ -16,12 +16,34 @@ docker-compose -f ocker-compose-zookeeper-cluster.yml stop
 
 ```
 
+### docker 问题排查
+```shell
+# 查看 docker 日志，可用于排查容器启动问题
+docker logs -f -t --tail 20 consul_node_1
+# 查看容器对应的IP
+docker inspect -f '{{.Name}} - {{.NetworkSettings.IPAddress }}' $(docker ps -aq)
+# 查看容器对应的IP，使用 docker-compose 启动的情况
+docker inspect -f '{{.Name}} - {{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $(docker ps -aq)
+
+```
+
+
+### todo
+- apollo
+
 
 ## docker 网络管理
 *记录*
 - 使用统一的网络 docker_net，不同组件使用不同网段
-```powershell
-docker network 
+- 命令使用直接看文档就行，这里记录使用实践　　
+```shell
+# 网络分为两部分，svc-应用服务，base-各种组件；
+# 每个组件/服务分配十个IP点，只是实践环境搭建，应该是足够了。
+# 组件网段
+docker network create docker_base
+
+# 服务网段
+docker network create docker_base
 ```
 
 *参考*
