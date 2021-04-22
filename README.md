@@ -35,7 +35,9 @@ docker inspect -f '{{.Name}} - {{range .NetworkSettings.Networks}}{{.IPAddress}}
 ## docker 网络管理
 *记录*
 - 使用统一的网络 docker_net，不同组件使用不同网段
-- 命令使用直接看文档就行，这里记录使用实践　　
+- 命令使用直接看文档就行，这里记录使用实践
+- docker-compose的网络名的规则是：<COMPOSE_PROJECT_NAME>_<NETWORKS>
+　　
 ```shell
 # 网络分为两部分，svc-应用服务，base-各种组件；
 # 每个组件/服务分配十个IP点，只是实践环境搭建，应该是足够了。
@@ -43,7 +45,7 @@ docker inspect -f '{{.Name}} - {{range .NetworkSettings.Networks}}{{.IPAddress}}
 docker network create docker_base
 
 # 服务网段
-docker network create docker_base
+docker network create docker_svc
 ```
 
 *参考*

@@ -1,0 +1,49 @@
+version: '3.7'
+services:
+  kong_database:
+    image: postgres:9.6
+    container_name: kong_database
+    environment:
+      - POSTGRES_USER=kong
+      - POSTGRES_DB=kong
+      - POSTGRES_PASSWORD=kong
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    networks: 
+      - dokcer_base
+
+  kong:
+    image: kong
+    container_name: kong
+    restart: always
+    links:
+      - kong_database:kong_database
+    ports:
+      - 8000:8000
+      - 8443:8443
+      - 8001:8001
+      - 8444:8444
+    environment:
+      - KONG_DATABASE=postgres
+      - KONG_PG_HOST=kong-database
+      - KONG_PG_USER=kong
+      - KONG_PG_DATABASE=kong
+      - KONG_PG_PASSWORD=kong
+      - KONG_ADMIN_LISTEN=0.0.0.0:8001, 0.0.0.0:8444 ssl
+    networks: 
+      - dokcer_base
+
+  kong_dashboard:
+    image: pgbi/kong-dashboard
+    container_name: kong_dashboard
+    links:
+      - kong:kong
+    command: start --kong-url http://kong:8001 --basic-auth admin=admin
+    ports:
+      - 8081:8080
+    networks: 
+      - dokcer_base
+
+networks:
+    dokcer_base:
+        external: true

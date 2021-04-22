@@ -1,0 +1,17 @@
+# docker evn config
+version: '3.7'
+
+networks:
+    docker_base:
+        driver: bridge
+        ipam:
+            driver: default
+            config:
+                - subnet: 192.18.0.0/24
+
+    docker_svc:
+        driver: bridge
+        ipam:
+            driver: default
+            config:
+                - subnet: 192.18.1.0/24
