@@ -42,10 +42,7 @@ services:
             docker_base:
                 ipv4_address: 192.18.0.54
 
+# 网络配置
 networks:
     docker_base:
-        driver: bridge
-        ipam:
-            driver: default
-            config:
-                - subnet: 192.18.0.0/24
+      external: true

@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  dns-server:
+    image: jpillora/dnsmasq
+    hostname: dns-server
+    container_name: dns-server
+    restart: always
+    ports:
+      - "53:53/udp"
+      - "8079:8080"
+    environment:
+      TZ: Asia/Shanghai
+      HTTP_USER: admin
+      HTTP_PASS: admin
+    #   PORT: "5380"
+    volumes:
+      - ./dnsmasq.conf:/etc/dnsmasq.conf:rw
+    # 日志大小限制
+    logging:
+        driver: json-file
+        options:
+            max-size: "64m"
+    networks:
+      docker_base:
+        ipv4_address: 192.168.1.2
+
+# 网络配置
+networks:
+  docker_base:
+    external: true

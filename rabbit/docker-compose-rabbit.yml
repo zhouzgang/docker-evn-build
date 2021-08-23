@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  rabbit:
+    image: rabbitmq:3.8-management
+    hostname: rabbit
+    container_name: "rabbitmq"
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=root
+      - RABBITMQ_DEFAULT_PASS=123123
+    volumes:
+      - ./data:/var/lib/rabbitmq
+    networks:
+      docker_base:
+        ipv4_address: 192.168.1.25
+
+# 网络配置
+networks:
+  docker_base:
+    external: true

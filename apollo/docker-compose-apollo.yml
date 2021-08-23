@@ -1,0 +1,50 @@
+# https://github.com/ctripcorp/apollo/tree/master/scripts/docker-quick-start
+version: '3'
+
+services:
+  apollo:
+    image: nobodyiam/apollo-quick-start
+    container_name: apollo
+    depends_on:
+      - apollo-db
+    ports:
+      - "18080:8080"
+      - "18090:8090"
+      - "18070:8070"
+    links:
+      - apollo-db
+    networks:
+      docker_base:
+        ipv4_address: 192.168.1.20
+
+  apollo-db:
+    image: mysql:5.7
+    container_name: apollo-db
+    environment:
+      TZ: Asia/Shanghai
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+    depends_on:
+      - apollo-dbdata
+    ports:
+      - "13306:3306"
+    volumes:
+      - ./sql:/docker-entrypoint-initdb.d
+    volumes_from:
+      - apollo-dbdata
+    networks:
+      docker_base:
+        ipv4_address: 192.168.1.21
+
+  apollo-dbdata:
+    image: alpine:latest
+    container_name: apollo-dbdata
+    volumes:
+      - /var/lib/mysql
+    networks:
+      docker_base:
+        ipv4_address: 192.168.1.23
+
+# 网络配置
+networks:
+  docker_base:
+    external: true
