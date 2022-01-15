@@ -16,6 +16,19 @@ docker-compose -f docker-compose-zookeeper-cluster.yml stop
 
 # delete all <none> images
 docker rmi `docker images | grep  "<none>" | awk '{print $3}'`
+
+# delete all exited container
+docker rm `docker ps -a | grep Exited | awk '{print $1}'`
+
+# 构建本地镜像
+docker build -t statement:v1 .
+
+# tag镜像
+docker tag statement:v1 lalamove/statement:v1
+
+# 推送镜像到远程仓库
+docker push bladeandmaster/springboot-demo:1.0
+
 ```
 
 ### docker 问题排查
